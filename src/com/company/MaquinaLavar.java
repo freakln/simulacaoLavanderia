@@ -82,10 +82,10 @@ public class MaquinaLavar extends Entity{
 	   modeloLavanderia.setTempoTotalEmFila((long) tempoEmfila);
 
 	   modeloLavanderia.setMediaEmFila((long) modeloLavanderia.getTempoTotalEmFila()/contagemClientes.getValue());
+	   modeloLavanderia.setThroughput(tempoLavagemTotal.getValue()/contagemClientes.getValue());
 
 	   tempoLavagemTotal.update((long) tempoLavagem);
 	   modeloLavanderia.aux++;
-	   System.out.println(modeloLavanderia.getTempoTotalEmFila()/contagemClientes.getValue());
 
 
 	   modeloLavanderia.sendTraceNote(this + " serve " + cliente + " por " + tempoLavagem + " minutos.");

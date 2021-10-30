@@ -32,6 +32,7 @@ public class Lavanderia extends Model{
 	public Count tempoTotalEmUso;
 	private Count mediaTempoEmfila;
 	private Count tempoTotalEmFila;
+	private Count throughput ;
 	public int aux = 0;
 
 	/**
@@ -128,11 +129,13 @@ public class Lavanderia extends Model{
 		distribuicaoClientes = new Count (this, "Contagem dos  clientes da lavanderia", true, true);
 		tempoTotalEmUso = new Count (this, "Contagem de tempo da lavagem " , true, true);
 		mediaTempoEmfila = new Count (this, "media de tempo em fila de um cliente " , true, true);
+        throughput  = new Count (this, "throughput da lanvaderia " , true, true);
 		tempoTotalEmFila = new Count (this, "Tempo Total em Fila" , true, true);
 		distribuicaoClientes.setUnit("clientes");
 		tempoTotalEmUso.setUnit("minutes");
 		mediaTempoEmfila.setUnit("minutes");
 		tempoTotalEmFila.setUnit("minutes");
+        throughput.setUnit("cliente/minutes");
 
 		/**
 		 * Método que indica se os valores gerados por essa distribuição de probabilidade podem ser negativos ou apenas positivos.
@@ -214,7 +217,16 @@ public class Lavanderia extends Model{
 		mediaTempoEmfila.reset();
 		mediaTempoEmfila.update(time);
 	}
-	public void setTempoTotalEmFila(long time) {
+
+    public void setThroughput(long time) {
+        throughput.reset();
+        throughput.update(time);
+    }
+
+
+
+
+    public void setTempoTotalEmFila(long time) {
 		tempoTotalEmFila.update(time);
 	}
 	public double getTempoTotalEmFila() {
