@@ -33,4 +33,8 @@ public class Cliente extends Entity{
 		tempoCorrente = owner.presentTime();
 		inicioTempoResposta = tempoCorrente.getTimeAsDouble();
 	}
+
+	public double getInicioTempoResposta() {
+		return inicioTempoResposta;
+	}
 }

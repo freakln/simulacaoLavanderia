@@ -3,6 +3,7 @@ package com.company;
 import desmoj.core.simulator.Entity;
 import desmoj.core.simulator.Model;
 import desmoj.core.simulator.TimeSpan;
+import desmoj.core.statistic.Count;
 
 public class MaquinaLavar extends Entity{
 	
@@ -56,6 +57,9 @@ public class MaquinaLavar extends Entity{
 	   
 	   Lavanderia modeloLavanderia;
 	   double tempoLavagem;
+	   Count tempoLavagemTotal;
+	   Count contagemClientes;
+	   double tempoEmfila;
 	   EventoTerminoLavagem eventoTerminoLavagem;
 	   
 	   // Armazena o cliente que está utilizando a máquina de lavar nesse momento.
@@ -63,14 +67,30 @@ public class MaquinaLavar extends Entity{
 	   
 	   // Identificação do modelo ao qual a máquina de lavar está associada.
 	   modeloLavanderia = (Lavanderia) getModel();
-	   
+	   contagemClientes = modeloLavanderia.distribuicaoClientes;
 	   /**
 	    * O tempo durante o qual a máquina de lavar deve permanecer servindo esse cliente é determinado, 
 		* de acordo com a distribuição de probabilidade do tempo de serviço da máquina de lavar.
 		*/
+	   contagemClientes.update();
+	   tempoEmfila = cliente.presentTime().getTimeAsDouble() - cliente.getInicioTempoResposta();
 	   tempoLavagem = modeloLavanderia.getTempoLavagem();
+
+	   tempoLavagemTotal = modeloLavanderia.tempoTotalEmUso;
+
+
+	   modeloLavanderia.setTempoTotalEmFila((long) tempoEmfila);
+
+	   modeloLavanderia.setMediaEmFila((long) modeloLavanderia.getTempoTotalEmFila()/contagemClientes.getValue());
+
+	   tempoLavagemTotal.update((long) tempoLavagem);
+	   modeloLavanderia.aux++;
+	   System.out.println(modeloLavanderia.getTempoTotalEmFila()/contagemClientes.getValue());
+
+
 	   modeloLavanderia.sendTraceNote(this + " serve " + cliente + " por " + tempoLavagem + " minutos.");
-	   
+	   modeloLavanderia.sendTraceNote(this + " Numero de clientes " + contagemClientes.getValue());
+
 	   // O evento correspondente ao término da lavagem das roupas desse cliente da lavanderia, por essa máquina de lavar, é criado...
 	   eventoTerminoLavagem = new EventoTerminoLavagem(modeloLavanderia, "Evento relacionado ao término da lavagem das roupas do cliente", true);
 	   // e escalonado.

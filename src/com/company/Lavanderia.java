@@ -2,11 +2,8 @@ package com.company;
 
 import desmoj.core.dist.ContDistExponential;
 import desmoj.core.dist.ContDistUniform;
-import desmoj.core.simulator.Experiment;
-import desmoj.core.simulator.Model;
-import desmoj.core.simulator.Queue;
-import desmoj.core.simulator.TimeInstant;
-import desmoj.core.simulator.TimeSpan;
+import desmoj.core.simulator.*;
+import desmoj.core.statistic.Count;
 
 public class Lavanderia extends Model{
 	
@@ -31,7 +28,12 @@ public class Lavanderia extends Model{
 	 * Será usada uma distribuição exponencial, com média de 40 minutos.
 	 */
 	private ContDistExponential distribuicaoTempoChegadasClientes;
-	
+	public Count distribuicaoClientes;
+	public Count tempoTotalEmUso;
+	private Count mediaTempoEmfila;
+	private Count tempoTotalEmFila;
+	public int aux = 0;
+
 	/**
 	 * distribuicaoTempoServicoMaquinaLavar: distribuição do tempo de serviço da máquina de lavar, ou seja,
 	 * do tempo gasto pela máquina de lavar para servir (lavar as roupas) os clientes da lavanderia.
@@ -123,7 +125,15 @@ public class Lavanderia extends Model{
 	     * Flag que indica se a distribuição deve ou não produzir saídas para um trace de saída.
 	     */
 		distribuicaoTempoChegadasClientes = new ContDistExponential (this, "Distribuição do tempo entre chegadas sucessivas de clientes à lavanderia", 40.0, true, true);
-		
+		distribuicaoClientes = new Count (this, "Contagem dos  clientes da lavanderia", true, true);
+		tempoTotalEmUso = new Count (this, "Contagem de tempo da lavagem " , true, true);
+		mediaTempoEmfila = new Count (this, "media de tempo em fila de um cliente " , true, true);
+		tempoTotalEmFila = new Count (this, "Tempo Total em Fila" , true, true);
+		distribuicaoClientes.setUnit("clientes");
+		tempoTotalEmUso.setUnit("minutes");
+		mediaTempoEmfila.setUnit("minutes");
+		tempoTotalEmFila.setUnit("minutes");
+
 		/**
 		 * Método que indica se os valores gerados por essa distribuição de probabilidade podem ser negativos ou apenas positivos.
 		 * 
@@ -182,19 +192,35 @@ public class Lavanderia extends Model{
 	 * na lavanderia, do próximo cliente.
 	 */
 	public double getTempoEntreChegadasClientes(){
-		
+
 		return (distribuicaoTempoChegadasClientes.sample());
 	}
-	
+
 	/**
 	 * Método responsável por retornar uma amostra
 	 * da distribuição de probabilidade utilizada para determinar
 	 * o tempo de serviço da máquina de lavar-roupas.
 	 */
 	public double getTempoLavagem() {
-		
-		return (distribuicaoTempoServicoMaquinaLavar.sample());	
+
+		return (distribuicaoTempoServicoMaquinaLavar.sample());
 	}
+
+	public double getCount() {
+
+		return (distribuicaoClientes.getValue());
+	}
+	public void setMediaEmFila(long time) {
+		mediaTempoEmfila.reset();
+		mediaTempoEmfila.update(time);
+	}
+	public void setTempoTotalEmFila(long time) {
+		tempoTotalEmFila.update(time);
+	}
+	public double getTempoTotalEmFila() {
+		return tempoTotalEmFila.getValue();
+	}
+
 
 	/**
 	 * Esse método verifica se a máquina de lavar está livre para ser utilizada pelo 
