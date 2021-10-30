@@ -135,7 +135,7 @@ public class Lavanderia extends Model{
 		tempoTotalEmUso.setUnit("minutes");
 		mediaTempoEmfila.setUnit("minutes");
 		tempoTotalEmFila.setUnit("minutes");
-        throughput.setUnit("cliente/minutes");
+        throughput.setUnit("minutes/cliente");
 
 		/**
 		 * Método que indica se os valores gerados por essa distribuição de probabilidade podem ser negativos ou apenas positivos.
