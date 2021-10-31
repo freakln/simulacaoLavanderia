@@ -33,7 +33,10 @@ public class Lavanderia extends Model{
 	private Count mediaTempoEmfila;
 	private Count tempoTotalEmFila;
 	private Count throughput ;
-	public int aux = 0;
+	private Count clienteEmFila ;
+	private Count mediaClienteEmfila ;
+	private double numeroCliente = 0;
+	public double aux = 0;
 
 	/**
 	 * distribuicaoTempoServicoMaquinaLavar: distribuição do tempo de serviço da máquina de lavar, ou seja,
@@ -129,12 +132,19 @@ public class Lavanderia extends Model{
 		distribuicaoClientes = new Count (this, "Contagem dos  clientes da lavanderia", true, true);
 		tempoTotalEmUso = new Count (this, "Contagem de tempo da lavagem " , true, true);
 		mediaTempoEmfila = new Count (this, "media de tempo em fila de um cliente " , true, true);
+		mediaClienteEmfila = new Count (this, "media de cliente em fila" , true, true);
         throughput  = new Count (this, "throughput da lanvaderia " , true, true);
+
 		tempoTotalEmFila = new Count (this, "Tempo Total em Fila" , true, true);
+		clienteEmFila  = new Count (this, "numero total de cliente em fila " , true, true);
 		distribuicaoClientes.setUnit("clientes");
 		tempoTotalEmUso.setUnit("minutes");
 		mediaTempoEmfila.setUnit("minutes");
 		tempoTotalEmFila.setUnit("minutes");
+		clienteEmFila.setUnit("clientes");
+		mediaTempoEmfila.setUnit("clientes");
+		mediaClienteEmfila.setUnit("clientes");
+
         throughput.setUnit("minutes/cliente");
 
 		/**
@@ -288,9 +298,21 @@ public class Lavanderia extends Model{
 		}else{
 			
 			sendTraceNote("Máquina de lavar será realocada.");
+
 			
 			// O primeiro cliente da fila de espera para utilizar a máquina de lavar é retirado dessa fila.
 			cliente = filaClientes.first();
+			System.out.println(filaClientes.size());
+			this.clienteEmFila.update(filaClientes.size());
+			this.aux++;
+			this.numeroCliente += filaClientes.size();
+			System.out.println("----");
+			System.out.println(Math.round(this.clienteEmFila.getValue()/ this.aux));
+
+			this.mediaClienteEmfila.reset();
+			this.mediaClienteEmfila.update((long) Math.round(this.clienteEmFila.getValue()/ this.aux));
+
+
 			filaClientes.remove(cliente);
 			
 			// Utilização da máquina de lavar-roupas pelo primeiro cliente da fila de espera.

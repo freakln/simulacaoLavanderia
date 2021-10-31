@@ -85,7 +85,6 @@ public class MaquinaLavar extends Entity{
 	   modeloLavanderia.setThroughput(tempoLavagemTotal.getValue()/contagemClientes.getValue());
 
 	   tempoLavagemTotal.update((long) tempoLavagem);
-	   modeloLavanderia.aux++;
 
 
 	   modeloLavanderia.sendTraceNote(this + " serve " + cliente + " por " + tempoLavagem + " minutos.");
